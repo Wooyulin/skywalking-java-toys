@@ -54,9 +54,9 @@ public class ThreadLocalUtil {
         AtomicReference<String> result = new AtomicReference<>();
         Map<ThreadLocal, Object> threadLocalMap = getThreadLocalMap();
         threadLocalMap.keySet().forEach(o -> {
-            System.out.println(o.getClass().getName());
+//            System.out.println(o.getClass().getName());
             if (threadLocalMap.get(o) instanceof String) {
-                System.out.println((String) threadLocalMap.get(o));
+//                System.out.println((String) threadLocalMap.get(o));
                 result.set((String) threadLocalMap.get(o));
             }
         });

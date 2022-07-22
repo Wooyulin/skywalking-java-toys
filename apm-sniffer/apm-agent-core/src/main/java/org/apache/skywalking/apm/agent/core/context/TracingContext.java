@@ -285,6 +285,7 @@ public class TracingContext implements AbstractTracerContext {
             profilingRecheck(parentSpan, operationName);
             parentSpan.setOperationName(operationName);
             entrySpan = parentSpan;
+            Tags.AVA_TTL.set(entrySpan, ThreadLocalUtil.getIdentifier());
             return entrySpan.start();
         } else {
             entrySpan = new EntrySpan(
