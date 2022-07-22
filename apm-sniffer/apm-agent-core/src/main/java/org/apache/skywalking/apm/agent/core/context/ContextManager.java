@@ -21,11 +21,13 @@ package org.apache.skywalking.apm.agent.core.context;
 import java.util.Objects;
 import org.apache.skywalking.apm.agent.core.boot.BootService;
 import org.apache.skywalking.apm.agent.core.boot.ServiceManager;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.TraceSegment;
 import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.sampling.SamplingService;
+import org.apache.skywalking.apm.agent.core.util.ThreadLocalUtil;
 import org.apache.skywalking.apm.util.StringUtil;
 
 import static org.apache.skywalking.apm.agent.core.conf.Config.Agent.OPERATION_NAME_THRESHOLD;
@@ -110,6 +112,7 @@ public class ContextManager implements BootService {
             samplingService.forceSampled();
             context = getOrCreate(operationName, true);
             span = context.createEntrySpan(operationName);
+            Tags.AVA_TTL.set(span, ThreadLocalUtil.getIdentifier());
             context.extract(carrier);
         } else {
             context = getOrCreate(operationName, false);

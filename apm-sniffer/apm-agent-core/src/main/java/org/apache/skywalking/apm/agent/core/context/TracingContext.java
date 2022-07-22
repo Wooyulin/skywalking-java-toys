@@ -29,6 +29,7 @@ import org.apache.skywalking.apm.agent.core.conf.Config;
 import org.apache.skywalking.apm.agent.core.conf.dynamic.watcher.SpanLimitWatcher;
 import org.apache.skywalking.apm.agent.core.context.ids.DistributedTraceId;
 import org.apache.skywalking.apm.agent.core.context.ids.PropagatedTraceId;
+import org.apache.skywalking.apm.agent.core.context.tag.Tags;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.AbstractTracingSpan;
 import org.apache.skywalking.apm.agent.core.context.trace.EntrySpan;
@@ -43,6 +44,7 @@ import org.apache.skywalking.apm.agent.core.logging.api.ILog;
 import org.apache.skywalking.apm.agent.core.logging.api.LogManager;
 import org.apache.skywalking.apm.agent.core.profile.ProfileStatusReference;
 import org.apache.skywalking.apm.agent.core.profile.ProfileTaskExecutionService;
+import org.apache.skywalking.apm.agent.core.util.ThreadLocalUtil;
 import org.apache.skywalking.apm.util.StringUtil;
 
 import static org.apache.skywalking.apm.agent.core.conf.Config.Agent.CLUSTER;
@@ -289,6 +291,7 @@ public class TracingContext implements AbstractTracerContext {
                 spanIdGenerator++, parentSpanId,
                 operationName, owner
             );
+            Tags.AVA_TTL.set(entrySpan, ThreadLocalUtil.getIdentifier());
             entrySpan.start();
             return push(entrySpan);
         }
@@ -309,6 +312,7 @@ public class TracingContext implements AbstractTracerContext {
         AbstractSpan parentSpan = peek();
         final int parentSpanId = parentSpan == null ? -1 : parentSpan.getSpanId();
         AbstractTracingSpan span = new LocalSpan(spanIdGenerator++, parentSpanId, operationName, this);
+        Tags.AVA_TTL.set(span, ThreadLocalUtil.getIdentifier());
         span.start();
         return push(span);
     }
@@ -339,8 +343,10 @@ public class TracingContext implements AbstractTracerContext {
             remotePeer = StringUtil.isEmpty(CLUSTER) ? remotePeer : CLUSTER + "/" + remotePeer;
             final int parentSpanId = parentSpan == null ? -1 : parentSpan.getSpanId();
             exitSpan = new ExitSpan(spanIdGenerator++, parentSpanId, operationName, remotePeer, owner);
+            Tags.AVA_TTL.set(exitSpan, ThreadLocalUtil.getIdentifier());
             push(exitSpan);
         }
+        Tags.AVA_TTL.set(exitSpan, ThreadLocalUtil.getIdentifier());
         exitSpan.start();
         return exitSpan;
     }
