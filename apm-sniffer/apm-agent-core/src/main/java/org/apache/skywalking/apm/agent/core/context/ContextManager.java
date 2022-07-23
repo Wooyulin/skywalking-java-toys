@@ -117,6 +117,7 @@ public class ContextManager implements BootService {
         } else {
             context = getOrCreate(operationName, false);
             span = context.createEntrySpan(operationName);
+            Tags.AVA_TTL.set(span, ThreadLocalUtil.getIdentifier());
         }
         return span;
     }
@@ -134,6 +135,7 @@ public class ContextManager implements BootService {
         operationName = StringUtil.cut(operationName, OPERATION_NAME_THRESHOLD);
         AbstractTracerContext context = getOrCreate(operationName, false);
         AbstractSpan span = context.createExitSpan(operationName, remotePeer);
+        Tags.AVA_TTL.set(span, ThreadLocalUtil.getIdentifier());
         context.inject(carrier);
         return span;
     }

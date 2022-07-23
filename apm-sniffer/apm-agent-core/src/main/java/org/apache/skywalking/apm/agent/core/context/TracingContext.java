@@ -285,14 +285,14 @@ public class TracingContext implements AbstractTracerContext {
             profilingRecheck(parentSpan, operationName);
             parentSpan.setOperationName(operationName);
             entrySpan = parentSpan;
-            Tags.AVA_TTL.set(entrySpan, ThreadLocalUtil.getIdentifier());
+//            Tags.AVA_TTL.set(entrySpan, ThreadLocalUtil.getIdentifier());
             return entrySpan.start();
         } else {
             entrySpan = new EntrySpan(
                 spanIdGenerator++, parentSpanId,
                 operationName, owner
             );
-            Tags.AVA_TTL.set(entrySpan, ThreadLocalUtil.getIdentifier());
+//            Tags.AVA_TTL.set(entrySpan, ThreadLocalUtil.getIdentifier());
             entrySpan.start();
             return push(entrySpan);
         }
@@ -344,11 +344,11 @@ public class TracingContext implements AbstractTracerContext {
             remotePeer = StringUtil.isEmpty(CLUSTER) ? remotePeer : CLUSTER + "/" + remotePeer;
             final int parentSpanId = parentSpan == null ? -1 : parentSpan.getSpanId();
             exitSpan = new ExitSpan(spanIdGenerator++, parentSpanId, operationName, remotePeer, owner);
-            Tags.AVA_TTL.set(exitSpan, ThreadLocalUtil.getIdentifier());
+//            Tags.AVA_TTL.set(exitSpan, ThreadLocalUtil.getIdentifier());
             push(exitSpan);
         }
-        Tags.AVA_TTL.set(exitSpan, ThreadLocalUtil.getIdentifier());
         exitSpan.start();
+        Tags.AVA_TTL.set(exitSpan, ThreadLocalUtil.getIdentifier());
         return exitSpan;
     }
 

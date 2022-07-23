@@ -1,10 +1,14 @@
 package org.apache.skywalking.apm.agent.core.util;
 
 
+import org.apache.skywalking.apm.util.StringUtil;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -21,6 +25,9 @@ public class ThreadLocalUtil {
             Field threadLocalsField = Thread.class.getDeclaredField("inheritableThreadLocals");
             threadLocalsField.setAccessible(true);
             Object threadLocalMap = threadLocalsField.get(thread);
+            if (Objects.isNull(threadLocalMap)) {
+                return Collections.EMPTY_MAP;
+            }
             Field tableField = threadLocalMap.getClass().getDeclaredField("table");
             tableField.setAccessible(true);
             Object[] table = (Object[]) tableField.get(threadLocalMap);
@@ -50,6 +57,7 @@ public class ThreadLocalUtil {
             }
         });
     }
+
     public static String getIdentifier() {
         AtomicReference<String> result = new AtomicReference<>();
         Map<ThreadLocal, Object> threadLocalMap = getThreadLocalMap();
@@ -60,7 +68,7 @@ public class ThreadLocalUtil {
                 result.set((String) threadLocalMap.get(o));
             }
         });
-        return result.get();
+        return StringUtil.isEmpty(result.get()) ? "none" : result.get();
     }
 
 //    public static void main(String[] args) {

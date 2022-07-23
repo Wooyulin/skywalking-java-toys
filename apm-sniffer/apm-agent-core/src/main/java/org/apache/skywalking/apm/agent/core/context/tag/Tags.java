@@ -111,6 +111,7 @@ public final class Tags {
     public static final String VAL_LOCAL_SPAN_AS_LOGIC_ENDPOINT = "{\"logic-span\":true}";
 
     public static final StringTag AVA_TTL = new StringTag(100, "ava-ttl");
+    public static final StringTag AVA_HEADER_MTID = new StringTag(101, "ava-header-mtid");
 
     /**
      * Creates a {@code StringTag} with the given key and cache it, if it's created before, simply return it without
