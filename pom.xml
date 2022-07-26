@@ -36,6 +36,7 @@
         <module>apm-protocol</module>
         <module>apm-sniffer</module>
         <module>apm-application-toolkit</module>
+        <module>apm-sniffer/apm-sdk-plugin/avaedu-2.4-plugin</module>
     </modules>
     <packaging>pom</packaging>
 
